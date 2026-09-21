@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Busca de Registros</h2>
+<input type="text" id="campoBusca" placeholder="Digite para filtrar..." onkeyup="buscarRegistros()">
+<table id="tabelaRegistros">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Data</th>
+            <th>Setor</th>
+            <th>LOG</th>
+            <th>ID Campo</th>
+            <th>Tipo</th>
+            <th>Motivo</th>
+            <th>Observação</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Preenchido via JavaScript -->
+    </tbody>
+</table>
+
+<script>
+function buscarRegistros() {
+    const termo = document.getElementById('campoBusca').value;
+    fetch(`/api/registros?termo=${encodeURIComponent(termo)}`)
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.querySelector('#tabelaRegistros tbody');
+            tbody.innerHTML = '';
+            data.forEach(reg => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reg.id}</td>
+                    <td>${reg.data}</td>
+                    <td>${reg.setor}</td>
+                    <td>${reg.log}</td>
+                    <td>${reg.id_campo}</td>
+                    <td>${reg.tipo}</td>
+                    <td>${reg.motivo}</td>
+                    <td>${reg.observacao}</td>
+                    <td>
+                        <a href="/editar/${reg.id}">Editar</a> |
+                        <a href="/excluir/${reg.id}" onclick="return confirm('Tem certeza?')">Excluir</a>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        });
+}
+
+// Carrega a tabela ao abrir a página
+document.addEventListener('DOMContentLoaded', buscarRegistros);
+</script>
+{% endblock %}

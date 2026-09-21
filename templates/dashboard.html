@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<h2>Dashboard - Indicadores</h2>
+<div class="graficos-container">
+    <div class="grafico">
+        <canvas id="graficoSetor"></canvas>
+    </div>
+    <div class="grafico">
+        <canvas id="graficoTipo"></canvas>
+    </div>
+    <div class="grafico">
+        <canvas id="graficoMotivo"></canvas>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/dados_graficos')
+        .then(response => response.json())
+        .then(dados => {
+            // Gráfico de barras por Setor
+            const labelsSetor = dados.setor.map(item => item.label);
+            const valoresSetor = dados.setor.map(item => item.total);
+            new Chart(document.getElementById('graficoSetor'), {
+                type: 'bar',
+                data: {
+                    labels: labelsSetor,
+                    datasets: [{
+                        label: 'Registros por Setor',
+                        data: valoresSetor,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // Gráfico de pizza por Tipo
+            const labelsTipo = dados.tipo.map(item => item.label);
+            const valoresTipo = dados.tipo.map(item => item.total);
+            new Chart(document.getElementById('graficoTipo'), {
+                type: 'pie',
+                data: {
+                    labels: labelsTipo,
+                    datasets: [{
+                        label: 'Distribuição por Tipo',
+                        data: valoresTipo,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(255, 206, 86, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(153, 102, 255, 0.7)'
+                        ]
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // Gráfico de barras horizontais por Motivo
+            const labelsMotivo = dados.motivo.map(item => item.label);
+            const valoresMotivo = dados.motivo.map(item => item.total);
+            new Chart(document.getElementById('graficoMotivo'), {
+                type: 'bar',
+                data: {
+                    labels: labelsMotivo,
+                    datasets: [{
+                        label: 'Registros por Motivo',
+                        data: valoresMotivo,
+                        backgroundColor: 'rgba(255, 159, 64, 0.7)'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',  // barras horizontais
+                    responsive: true
+                }
+            });
+        });
+});
+</script>
+{% endblock %}

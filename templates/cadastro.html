@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Espaço para o logo -->
+<div class="logo-section">
+    <h2>Quali Vision</h2>
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo-preview" onerror="this.style.display='none'">
+</div>
+
+<hr>
+
+<form method="post" action="{{ url_for('cadastro') if not registro else url_for('editar', id=registro['id']) }}">
+    <div class="form-group">
+        <label for="data">Data:</label>
+        <input type="date" id="data" name="data" required value="{{ registro['data'] if registro else '' }}">
+    </div>
+    <div class="form-group">
+        <label for="setor">Setor:</label>
+        <input type="text" id="setor" name="setor" required value="{{ registro['setor'] if registro else '' }}">
+    </div>
+    <div class="form-group">
+        <label for="log">LOG:</label>
+        <input type="text" id="log" name="log" required value="{{ registro['log'] if registro else '' }}">
+    </div>
+    <div class="form-group">
+        <label for="id_campo">ID:</label>
+        <input type="text" id="id_campo" name="id_campo" required value="{{ registro['id_campo'] if registro else '' }}">
+    </div>
+    <div class="form-group">
+        <label for="tipo">Tipo:</label>
+        <input type="text" id="tipo" name="tipo" required value="{{ registro['tipo'] if registro else '' }}">
+    </div>
+    <div class="form-group">
+        <label for="motivo">Motivo:</label>
+        <input type="text" id="motivo" name="motivo" required value="{{ registro['motivo'] if registro else '' }}">
+    </div>
+    <div class="form-group">
+        <label for="observacao">Observação:</label>
+        <textarea id="observacao" name="observacao" rows="3">{{ registro['observacao'] if registro else '' }}</textarea>
+    </div>
+    <button type="submit">{{ 'Atualizar' if registro else 'Salvar' }}</button>
+</form>
+{% endblock %}
